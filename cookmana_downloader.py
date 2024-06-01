@@ -30,9 +30,13 @@ if __name__ == '__main__':
     manga_list = data['data']
     manga_list.reverse()
 
+    index = 0
+
     for manga in manga_list:
+        index += 1
         episode_id = manga['id']
         title = manga['title']
+        title = str(index).zfill(3) + "_" + title
 
         # 이미 다운로드한 화인지 확인
         dirname = f"downloads/{manga_title}/{title}"
