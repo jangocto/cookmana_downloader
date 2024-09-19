@@ -3,7 +3,7 @@ import requests, re, os, tqdm
 def init():
 
     print("----------------------------------")
-    print("쿡마나 다운로더 Update 2024.06.03")
+    print("쿡마나 다운로더 Update 2024.09.20")
     print("----------------------------------")
 
     if not os.path.exists("downloads"):
@@ -61,28 +61,29 @@ if __name__ == '__main__':
         data = response.json()
         image_urls = data['data']['urls'].split(",")
         
-        serverType = "01"
+        serverType = 1
+
         for i, image_url in enumerate(tqdm.tqdm(image_urls, desc=f"{title} 다운로드 중")):
 
             if not "/" in image_url:
-                image_download_url = f"http://www.pl3040.com//kr/{serverType}/{manga_id}/{episode_id}/{image_url}"
+                image_download_url = f"http://www.pl3040.com//kr/0{serverType}/{manga_id}/{episode_id}/{image_url}"
             else:
                 A, B, C = image_url.split("/")
-                image_download_url = f"http://www.pl3040.com//kr/{serverType}/{manga_id}/{episode_id}/{C}"
+                image_download_url = f"http://www.pl3040.com//kr/0{serverType}/{manga_id}/{episode_id}/{C}"
 
             # Check serverType
-            res = requests.get(image_download_url)
-            if res.status_code != 200:
-                if serverType == "01":
-                    serverType = "02"
-                else:
-                    serverType = "01"
-                
-                if not "/" in image_url:
-                    image_download_url = f"http://www.pl3040.com//kr/{serverType}/{manga_id}/{episode_id}/{image_url}"
-                else:
-                    A, B, C = image_url.split("/")
-                    image_download_url = f"http://www.pl3040.com//kr/{serverType}/{manga_id}/{episode_id}/{C}"
+
+            for _ in range(3):
+                res = requests.get(image_download_url)
+                if res.status_code != 200:
+                    serverType += 1
+            
+
+            if not "/" in image_url:
+                image_download_url = f"http://www.pl3040.com//kr/0{serverType}/{manga_id}/{episode_id}/{image_url}"
+            else:
+                A, B, C = image_url.split("/")
+                image_download_url = f"http://www.pl3040.com//kr/0{serverType}/{manga_id}/{episode_id}/{C}"
 
 
             dirname = f"downloads/{manga_title}/{title}"
