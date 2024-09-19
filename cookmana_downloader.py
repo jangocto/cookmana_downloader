@@ -1,4 +1,4 @@
-import requests, re, os, tqdm
+import requests, re, os, tqdm, sys
 
 def init():
 
@@ -65,25 +65,34 @@ if __name__ == '__main__':
 
         for i, image_url in enumerate(tqdm.tqdm(image_urls, desc=f"{title} 다운로드 중")):
 
-            if not "/" in image_url:
-                image_download_url = f"http://www.pl3040.com//kr/0{serverType}/{manga_id}/{episode_id}/{image_url}"
-            else:
-                A, B, C = image_url.split("/")
-                image_download_url = f"http://www.pl3040.com//kr/0{serverType}/{manga_id}/{episode_id}/{C}"
-
             # Check serverType
 
-            for _ in range(3):
+            for _ in range(20):
+
+                if not "/" in image_url:
+                    image_download_url = f"http://www.pl3040.com//kr/{str(serverType).zfill(2)}/{manga_id}/{episode_id}/{image_url}"
+                else:
+                    A, B, C = image_url.split("/")
+                    image_download_url = f"http://www.pl3040.com//kr/{str(serverType).zfill(2)}/{manga_id}/{episode_id}/{C}"
+
                 res = requests.get(image_download_url)
                 if res.status_code != 200:
                     serverType += 1
+
+                    if serverType >= 21:
+                        print(f"Failed to download {image_download_url} (status code: {res.status_code})")
+                        sys.exit(1)
+
+                else:
+                    break
+
             
 
             if not "/" in image_url:
-                image_download_url = f"http://www.pl3040.com//kr/0{serverType}/{manga_id}/{episode_id}/{image_url}"
+                image_download_url = f"http://www.pl3040.com//kr/{str(serverType).zfill(2)}/{manga_id}/{episode_id}/{image_url}"
             else:
                 A, B, C = image_url.split("/")
-                image_download_url = f"http://www.pl3040.com//kr/0{serverType}/{manga_id}/{episode_id}/{C}"
+                image_download_url = f"http://www.pl3040.com//kr/{str(serverType).zfill(2)}/{manga_id}/{episode_id}/{C}"
 
 
             dirname = f"downloads/{manga_title}/{title}"
