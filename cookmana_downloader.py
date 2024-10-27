@@ -3,7 +3,7 @@ import requests, re, os, tqdm, sys
 def init():
 
     print("----------------------------------")
-    print("쿡마나 다운로더 Update 2024.09.20")
+    print("쿡마나 다운로더 Update 2024.10.27")
     print("----------------------------------")
 
     if not os.path.exists("downloads"):
@@ -13,14 +13,14 @@ if __name__ == '__main__':
 
     init()
     
-    url = input("다운로드할 만화의 URL을 입력하세요(e.g. http://154.219.3.228/episode/2498?order=desc) ")
+    url = input("다운로드할 만화의 URL을 입력하세요(e.g. https://cookmana11.com/episode/2498?order=desc) ")
 
     # url에서 숫자로된 id 부분을 추출
     manga_id = re.search(r'episode/(\d+)', url).group(1)
 
 
     # API 요청으로 만화 정보 가져오기
-    info_api_url = f"http://154.219.3.228/api/episode/cover/{manga_id}"
+    info_api_url = f"https://cookmana11.com/api/episode/cover/{manga_id}"
     response = requests.get(info_api_url)
     data = response.json()  
     manga_title = data['data']['title']
@@ -29,7 +29,7 @@ if __name__ == '__main__':
 
     # API 요청으로 목록 가져오기
     for page in range(100):
-        list_api_url = f"http://154.219.3.228/api/episode/list/{manga_id}?page={page+1}&order=desc"
+        list_api_url = f"https://cookmana11.com/api/episode/list/{manga_id}?page={page+1}&order=desc"
         response = requests.get(list_api_url)
 
         data = response.json()
